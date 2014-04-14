@@ -474,7 +474,7 @@ def addadmin():
             fin()
 
 # Mangos Installer
-def mangosinstall()
+def mangosinstall():
     for sel in i.get_selected_objects():
         if sel == "Mangos":
             subprocess.call('clear')
