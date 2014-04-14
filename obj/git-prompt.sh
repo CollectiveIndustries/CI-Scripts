@@ -85,6 +85,12 @@
 # the colored output of "git status -sb" and are available only when
 # using __git_ps1 for PROMPT_COMMAND or precmd.
 
+## SET GIT OPTIONS FOR PROMPT ##
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWUPSTREAM="auto"
+GIT_PS1_SHOWSTASHSTATE=1
+GIT_PS1_SHOWUNTRACKEDFILES=1
+
 # check whether printf supports -v
 __git_printf_supports_v=
 printf -v __git_printf_supports_v -- '%s' yes >/dev/null 2>&1
