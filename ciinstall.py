@@ -77,6 +77,21 @@ if "check_output" not in dir( subprocess ): # duck punch it in!
 #
 ##########################################
 
+## Configuration file writter ##
+# file gets written line by line
+# allows for modification of each line in a configuration file
+#
+# TODO: add config section for modifying config files
+# PROVIDED BY: Andrew Malone
+# COPYRIGHT: Collective Industries (C) 2014
+def write_conf(in_file_n,out_file_n):
+	"""Open in_file_n and install it to out_file_n back up old one first"""
+	subprocess.call(shlex.split("cp "+out_file_n+" "+out_file_n+".bak"))#add .bak to the filename provided
+	with open(in_file_n,'r') as infile:#open the file and catch errors as an exception
+        	with open(out_file_n,"w") as outfile:
+                	for i,line in enumerate(infile):
+	                	outfile.write(line)#write file line by line
+
 # Collective Industries Debug
 def debug(var, msg, DEBUG):
     if DEBUG == '1':
@@ -469,7 +484,7 @@ def addadmin():
             subprocess.call(shlex.split('sudo usermod -L '+ AdminUN))
             subprocess.call(shlex.split('sudo chage -d 0 '+ AdminUN))
             subprocess.call(shlex.split('sudo usermod -U '+ AdminUN))
-
+	    #migrate color scripts from REPO/obj to AdminHome/
         else:
             fin()
 
