@@ -5,6 +5,7 @@ Place for all of Collective Industries Custom scripts that have to do not fit in
 
 Scripts:
 1. ciinstall.py - A python script that allows you to choose which progam(s) you would like to install. Many to choose from and more to add. Once you hit OK on the menu very little else you will need to do
+2. exip - short python script to grab your External IP address from dydns and display it thankyou hammerzaine for the function (also used in ciinstall for noip)
 
 Features:
 ---------
