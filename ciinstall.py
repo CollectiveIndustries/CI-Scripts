@@ -7,6 +7,12 @@
 #
 ##################################################################################
 
+				## TODO ##
+# add ulogd install + config
+# add iptables firewall script (set default as SSH on 22 only from localnet)
+# add mysql database + user for firewall
+# add firewall parser (webfwlog) + config (/etc/webfwlog.conf)
+
 # Import all of our needed function
 from subprocess import call
 import os
