@@ -7,12 +7,6 @@
 #
 ##################################################################################
 
-				## TODO ##
-# add ulogd install + config
-# add iptables firewall script (set default as SSH on 22 only from localnet)
-# add mysql database + user for firewall
-# add firewall parser (webfwlog) + config (/etc/webfwlog.conf)
-
 # Import all of our needed function
 from subprocess import call
 import os
@@ -61,21 +55,6 @@ if "check_output" not in dir( subprocess ): # duck punch it in!
 # Collective Industries Functions
 #
 ##########################################
-
-## Configuration file writter ##
-# file gets written line by line
-# allows for modification of each line in a configuration file
-#
-# TODO: add config section for modifying config files
-# PROVIDED BY: Andrew Malone
-# COPYRIGHT: Collective Industries (C) 2014
-def write_conf(in_file_n,out_file_n):
-	"""Open in_file_n and install it to out_file_n back up old one first"""
-	subprocess.call(shlex.split("cp "+out_file_n+" "+out_file_n+".bak"))#add .bak to the filename provided
-	with open(in_file_n,'r') as infile:#open the file and catch errors as an exception
-        	with open(out_file_n,"w") as outfile:
-                	for i,line in enumerate(infile):
-	                	outfile.write(line)#write file line by line
 
 # Collective Industries Debug
 def debug(var, msg, DEBUG):
@@ -511,12 +490,8 @@ def addadmin():
             subprocess.call(shlex.split('sudo usermod -L '+ AdminUN))
             subprocess.call(shlex.split('sudo chage -d 0 '+ AdminUN))
             subprocess.call(shlex.split('sudo usermod -U '+ AdminUN))
-<<<<<<< HEAD
             mangosinstall()
 
-=======
-	    #migrate color scripts from REPO/obj to AdminHome/
->>>>>>> 34df331edbc834a3090d17a72f74341c4d647e37
         else:
             mangosinstall()
 

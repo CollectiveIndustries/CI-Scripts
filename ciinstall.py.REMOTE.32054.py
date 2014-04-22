@@ -26,13 +26,34 @@ import glob
 import platform
 import crypt
 import urllib
-import re	
+import re
+
+# Installing npyscreen before importing npyscreen for menu UI 
+npy = subprocess.call(shlex.split('locate npyscreen-3.2.egg-info'))
+if npy == '':
+    os.chdir('/opt/')
+    subprocess.call(shlex.split('sudo wget https://pypi.python.org/packages/source/n/npyscreen/npyscreen-3.37.tar.gz'))
+    subprocess.call(shlex.split('tar xvf npyscreen-3.37.tar.gz'))
+    os.chdir('npyscreen-3.2')
+    subprocess.call(shlex.split('sudo ./setup.py'))
+    subprocess.call(shlex.split('sudo rm npyscreen-3.37.tar.gz'))
+	
+import npyscreen
 
 # Global Variables
-arch = ''    # Variable for the machines architecture
-User = ''    # Variable for getting the user who is running this script
-IP = ''      # Variable for gettng external IP of server
-choice = ''  # Variable for program choices on menu
+InstallTS3 = ''    # Variable for installing Teamspeak 3
+InstallNOIP = ''   # Variable for installing No-IP
+InstallWebmin = '' # Variable for installing Webmin
+InstallJava = ''   # Variable for installing Java
+InstallVB = ''     # Variable for installing Virtual Box
+InstallPHPBB = ''  # Variable for installing PHPBB Forum
+InstallPHPMA = ''  # Variable for installing PHPMyAdmin
+InstallBind9 = ''  # Variable for installing Bind9
+AddAdmin = ''      # Variable for adding a new Admin user
+arch = ''	   # Variable for the machines architecture
+User = ''
+IP = ''
+i = ''
 		
 ##############################################################################################################################
 #
@@ -82,15 +103,14 @@ def debug(var, msg, DEBUG):
     if DEBUG == '1':
         print var +' = ' + msg
         raw_input('Hit any key to continue')
-
-# Gets External IP address of the server		
+	
 def chkip():
     global IP
     url = "http://checkip.dyndns.org"
     request = urllib.urlopen(url).read()
     theIP = re.findall(r"\d{1,3}\.\d{1,3}\.\d{1,3}.\d{1,3}", request)
     IP = theIP[0]
-		
+	
 # Collective Industries Logo
 def logo():
 	print ""
@@ -113,13 +133,26 @@ def logo():
 ##########################################
 class InstallApp(npyscreen.NPSApp): # Simple UI Menu class by npyscreen
     def main(self):
-        Form = npyscreen.ActionForm(name = "Collective Industries Program Installer",) # Creates the menu		
+        F = npyscreen.ActionForm(name = "Collective Industries Program Installer",) # Creates the menu
+		
+        # Global Variables
+        global InstallTS3
+        global InstallNOIP
+        global InstallWebmin
+        global InstallPHPMA
+        global InstallJava
+        global InstallVB
+        global InstallPHPBB
+        global InstallBind9
+        global AddAdmin
+        global i
 
         ###################################################
         #
         # Programs to add
         #
         ###################################################
+		# gitHub
         # List of other programs to add
         # Mangos-Enhanced
         # LHC
@@ -131,20 +164,12 @@ class InstallApp(npyscreen.NPSApp): # Simple UI Menu class by npyscreen
         # Mangos + compile install configuration and daemon
         # MySQL Replication
         # System Backup + cron tab with full script path and automated backup script
-        # Beep (sudo apt-get install beep)
-        # Beep Melodies
-        
+ 
         # This creates the options and names 
-        choice = Form.add(npyscreen.TitleMultiSelect, max_height =-2, value = [], name="Pick the programs you want to install",
-            values = ["Teamspeak 3", "No-IP", "Webmin", "PHPMyAdmin", "Java", "Virtual Box", "PHPBB3", "Bind9", "gitHub", "Beep", "Add Admin"], scroll_exit=True)
+        i = F.add(npyscreen.TitleMultiSelect, max_height =-2, value = [], name="Pick the programs you want to install",
+            values = ["Teamspeak 3", "No-IP", "Webmin", "PHPMyAdmin", "Java", "Virtual Box", "PHPBB3", "Bind9", "Add Admin"], scroll_exit=True)
 
-			
-        def on_cancel(self):
-            exit()
-
-        # Form.on_cancel = on_cancel
-		
-        Form.edit() # This allows the person to edit the menu
+        F.edit() # This allows the person to edit the menu
             
 
 ##########################################
@@ -159,19 +184,15 @@ def fin():
 	
     print "Installation is done, there may be a few things you will need to do first. \n\n"
 	
-    for sel in choice.get_selected_objects():
+    for sel in i.get_selected_objects():
         if sel == "Teamspeak 3":
-            print "Teamspeak 3:"
+            print "Teamspeak 3"
             print "You need to start Teamspeak 3 up manually the first time. To do that type: "
             print "sudo service teamspeak3 start \n\n"
-        elif sel == "gitHub":
-            print "gitHub:"
-            print "There has been a help file named \"gitHubHelp.txt\" put in everyone's home directory."
 	
-    print "Installation complete"
-    print "Installed Programs:"
-    if choice.get_selected_objects() is not None:
-        for sel in choice.get_selected_objects():
+    print "Installation complete of:"
+    if i.get_selected_objects() is not None:
+        for sel in i.get_selected_objects():
             print (sel)
 
     if arc == '64bit':
@@ -190,7 +211,7 @@ def fin():
 
 # Teamspeak 3
 def ts3():
-    for sel in choice.get_selected_objects():
+    for sel in i.get_selected_objects():
         if sel == "Teamspeak 3":
             subprocess.call('clear')
             logo()
@@ -238,7 +259,7 @@ def ts3():
 
 # No-IP
 def noip():
-    for sel in choice.get_selected_objects():
+    for sel in i.get_selected_objects():
         if sel == "No-IP":
             subprocess.call('clear')
             logo()
@@ -303,7 +324,7 @@ def noip():
 
 # Webmin
 def webmin():
-    for sel in choice.get_selected_objects():
+    for sel in i.get_selected_objects():
         if sel == "Webmin":
             subprocess.call('clear')
             logo()
@@ -323,7 +344,7 @@ def webmin():
 
 # PHPMyAdmin
 def phpma():
-    for sel in choice.get_selected_objects():
+    for sel in i.get_selected_objects():
         if sel == "PHPMyAdmin":
             subprocess.call('clear')
             logo()
@@ -336,7 +357,7 @@ def phpma():
 
 # Java
 def java():
-    for sel in choice.get_selected_objects():
+    for sel in i.get_selected_objects():
         if sel == "Java":
             subprocess.call('clear')
             logo()
@@ -351,7 +372,7 @@ def java():
         
 # Virtual Box
 def vb():
-    for sel in choice.get_selected_objects():
+    for sel in i.get_selected_objects():
         if sel == "Virtual Box":
             subprocess.call('clear')
             logo()
@@ -368,7 +389,7 @@ def vb():
 
 # PHPBB3
 def phpbb3():
-    for sel in choice.get_selected_objects():
+    for sel in i.get_selected_objects():
         if sel == "PHPBB3":
             subprocess.call('clear')
             logo()
@@ -381,12 +402,11 @@ def phpbb3():
 
 # Bind9
 def bind9():
-    for sel in choice.get_selected_objects():
+    for sel in i.get_selected_objects():
         if sel == "Bind9":
             subprocess.call('clear')
             logo()
 			
-            print "Installing Bind9"
             subprocess.call(shlex.split('sudo apt-get install -y bind9'))
             dname = raw_output('What is the domain name you want to use? eg. domain.com: ')
 			# Wriiting startup script
@@ -453,55 +473,14 @@ def bind9():
                 subprocess.call(shlex.split('sudo echo "'+ data +'" > /etc/resolv.conf'))
 				
             subprocess.call(shlex.split('sudo /etc/init.d/bind9 restart'))
-            github()
+            bind9()
 
         else:
-            github()
-			
-# gitHub
-def github():
-    for sel in choice.get_selected_objects():
-        if sel == "gitHub":
-            subprocess.call('clear')
-            logo()			
-            print "Installing gitHub"
-            dir = os.listdir('/home/')
-            subprocess.call(shlex.split('sudo apt-get install -y git-core'))
-            subprocess.call(shlex.split('sudo apt-get install -y git'))
-            local = os.getcwd()
-            if local != '/home/'+ User +'/':
-			    os.chdir('/home/'+ User +'/')
-
-            git = open('gitHubHelp.txt', 'w')
-            git.write('For a list of avalible commands type:')
-            git.write('git help -a')
-            git.write('')
-            git.write('Simple Usage:')
-            git.write('git clone <address> <dir> - Clones <address> to <dir>')
-            git.write('git add . - Add files/changes to the commit (local)')
-            git.write('git commit -a - Bypass add . and automatically generates a message')
-            git.write('git commit -m "<message>" - Commit changes and set a message (must use add .)')
-            git.write('git push - Push current commit to remote')
-            git.write('git pull - Pulls changes off remote branch and update local repository (This may cause issues if the working directory is not clean)')
-            git.write('')
-            git.write('To clean out the local changes and pull a clean copy of the remote:')				
-            git.write('git fetch --all')
-            git.write('git reset --hard origin/master')
-            git.write('')
-            git.write('For the gitHub Cheat Sheet click on the link below')
-            git.write('https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet')
-            git.close()
-            for list in dir:
-                if dir != User:
-                    subprocess.call(shlex.split('sudo cp gitHubHelp.txt /home/'+ dir +'/'))
-            addadmin()
-
-        else:
-           addadmin()
+            bind9()
 	
 # Add Admin User
 def addadmin():
-    for sel in choice.get_selected_objects():
+    for sel in i.get_selected_objects():
         if sel == "Add Admin":
             subprocess.call('clear')
             logo()
@@ -511,34 +490,15 @@ def addadmin():
             subprocess.call(shlex.split('sudo usermod -L '+ AdminUN))
             subprocess.call(shlex.split('sudo chage -d 0 '+ AdminUN))
             subprocess.call(shlex.split('sudo usermod -U '+ AdminUN))
-<<<<<<< HEAD
-            mangosinstall()
-
-=======
 	    #migrate color scripts from REPO/obj to AdminHome/
->>>>>>> 34df331edbc834a3090d17a72f74341c4d647e37
         else:
-            mangosinstall()
+            fin()
 
 # Mangos Installer
 def mangosinstall():
-    for sel in choice.get_selected_objects():
+    for sel in i.get_selected_objects():
         if sel == "Mangos":
-            githubpkg = subprocess.call(shlex.split('dpkg -s git'))
-            gitcorepkg = subprocess.call(shlex.split('dpkg -s git-core'))
             subprocess.call('clear')
-            if githubpkg == '0' or gitcorepkg == '0':
-                print "You must install gitHub before you can install Mangos"
-            
-            else:
-                subprocess.call(shlex.split('git clone https://github.com/CollectiveIndustries/Mangos_Installer.git'))
-                os.chdir('/Mangos_Installer')
-                subprocess.call(shlex.split('chmod 777 mangos-ci-install.py'))
-                subprocess.call(shlex.split('./mangos-ci-install.py'))
-                fin()
-        else:
-            fin()
-			
 ##########################################
 #
 # Initial Startup
@@ -552,7 +512,6 @@ Clint = subprocess.call(shlex.split('dpkg-query -W -f="${Status} \n" clint')) # 
 SPC = subprocess.call(shlex.split('dpkg-query -W -f="${Status} \n" software-properties-common')) # Checks to see if software-properties-common is installed
 AF = subprocess.call(shlex.split('dpkg-query -W -f="${Status} \n" apt-file')) # Checks to see if apt-file is installed
 P3 = subprocess.call(shlex.split('dpkg-query -W -f="${Status} \n" python3.3')) # Check to see if python 3.3 is installed
-npy = subprocess.call(shlex.split('locate npyscreen-3.2.egg-info'))
 
 debug('platform.arch',str(platform.architecture()[0]),1)
 
@@ -583,14 +542,6 @@ if SPC == 1:
 if AF == 1:
     subprocess.call(shlex.split('sudo apt-get install -y apt-file && apt-file update'))
 
-# Installing npyscreen before importing npyscreen for menu UI 
-if npy == '':
-    os.chdir('/opt/')
-    subprocess.call(shlex.split('sudo wget https://pypi.python.org/packages/source/n/npyscreen/npyscreen-3.37.tar.gz'))
-    subprocess.call(shlex.split('tar xvf npyscreen-3.37.tar.gz'))
-    os.chdir('npyscreen-3.2')
-    subprocess.call(shlex.split('sudo ./setup.py'))
-    subprocess.call(shlex.split('sudo rm npyscreen-3.37.tar.gz'))
 	
 User = getpass.getuser() # Gets the current username 
 
@@ -599,26 +550,19 @@ logo()
 
 update = raw_input('Before we begin would you like to update the server?: [y]' )
 
-
-    
 if update == 'y' or  update == '':
-    import npyscreen
     subprocess.call(shlex.split('sudo apt-get update -y'))
     subprocess.call(shlex.split('sudo apt-get upgrade -y'))
     App = InstallApp()
     App.run()
-    if choice.get_selected_objects() is not None:
-	    ts3()		
-    elif choice.get_selected_objects() is None:
-        print ""
+    if i.get_selected_objects() is not None:
+	    ts3()
 
 elif update == 'n':
-    import npyscreen
     debug('arc',str(arc), 0)
     App = InstallApp()
     App.run() 
-    if choice.get_selected_objects() is not None: 
+    if i.get_selected_objects() is not None: 
         ts3()
-    elif choice.get_selected_objects() is None:
-        print ""
+
 #http://rlworkman.net/howtos/ulogd.html ULOGD - help page

@@ -1,0 +1,26 @@
+#!/usr/bin/python
+import math
+import os
+import time
+
+def KLED(num,caps,scroll):
+        os.system('setleds -L '+num+'num '+caps+'caps '+scroll+'scroll < /dev/console')
+#force output to console device used to bypass SSH logins and still control LEDs on local keys
+
+def Beep(frequency,duration):
+        os.system('beep -f %s -l %s' % (frequency,duration))
+
+def Sleep(tm):
+        time.sleep( (tm/1000) )
+
+for index in  range(261, 523):
+#        Beep(index,30)
+        KLED('-','-','-') # - off
+        Sleep(100)
+        KLED('+','-','-') # + on
+        Sleep(100)
+        KLED('+','+','-')
+        Sleep(100)
+        KLED('+','+','+')
+        Sleep(100)
+        KLED('-','-','-') # - off
