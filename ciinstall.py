@@ -120,11 +120,11 @@ class InstallApp(npyscreen.NPSApp): # Simple UI Menu class by npyscreen
         # Programs to add
         #
         ###################################################
-        # List of other programs to add
+	# iptables firewall rule builder
         # Mangos-Enhanced
         # LHC
         # Icinga + configuration
-        # Moodle
+        # Moodle - staff training program
         # phpLdapAdmin
         # UlogD + configuration of database and iptables
         # ClamAV + daemon
@@ -216,11 +216,11 @@ def ts3():
             subprocess.call(shlex.split('sudo service teamspeak3 start')) # Starts the Teamspeak 3 server
 		
             # Opens up the ports in iptabels needed for Teamspeak 3
-            Firewall = raw_input('Open ports in your firewall for Teamspeak 3?: [y]' )
+            Firewall = raw_input('Open ports in your firewall for Teamspeak 3?: [y]' )#make TS3 rule and TARGET chain for cleaner table
             if Firewall == 'y' or Firewall == '':
                 print "Opening ports"
                 subprocess.call(shlex.split('sudo iptables -A INPUT -p udp --dport 9987 -j ACCEPT'))
-                subprocess.call(shlex.split('sudo iptables -A INPUT -p udp --sport 9987 -j ACCEPT'))
+                subprocess.call(shlex.split('sudo iptables -A INPUT -p udp --sport 9987 -j ACCEPT'))#check source ports do we need them? or is it arbitrary
                 print "Port 9987 now open"
                 subprocess.call(shlex.split('sudo iptables -A INPUT -p tcp --dport 30033 -j ACCEPT'))
                 subprocess.call(shlex.split('sudo iptables -A INPUT -p tcp --sport 30033 -j ACCEPT'))
