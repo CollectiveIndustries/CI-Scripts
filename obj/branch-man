@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ "$1" != "" ]; then
+    git branch $1
+    git push origin $1
+    git checkout $1
+else
+    echo "usage: "$0" <feature-name>"
+    echo "name of new feature your working on will automaticly set up a branch push it to remote and change to it localy"
+fi
