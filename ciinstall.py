@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
-##################################################################################
+######################################################################################
 #
-# Copyright (C) 2013 Collective Industries code provided by Levi Modl
+# Copyright (C) 2013 Collective Industries code provided by Levi Modl & Andrew Malone
 # Python code for installing all the possible programs we use the most
 #
-##################################################################################
+######################################################################################
 
 				## TODO ##
 # add ulogd install + config
@@ -62,7 +62,51 @@ if "check_output" not in dir( subprocess ): # duck punch it in!
 #
 ##########################################
 
-## Configuration file writter ##
+### Firewall API ###
+# set of firewall functions
+# calls iptables with ports to add to the firewall and sets log options if needed
+#
+# PROVIDED BY: Andrew Malone
+# COPYRIGHT: Collective Industries (C) 2014
+#
+# $IPTABLES -A RULE_4  -j LOG  --log-level info --log-prefix "SOME TEXT"
+# $IPTABLES -A RULE_4  -j DROP
+# ULOG INSTALLED
+# $IPTABLES -A RULE_4  -j ULOG  --ulog-nlgroup 1 --ulog-prefix "SOME TEXT" --ulog-qthreshold 1
+
+	## firewall globals ##
+target_Dlog = "log_drop"
+target_Alog = "log_accept"
+def pre_fw_init():
+	"""call once to set up standard firewall rule-set and prepare for server install"""
+	subprocess.call(shlex.split("sudo iptables -N "+target_Dlog))
+	subprocess.call(shlex.split("sudo iptables -N "+target_Alog))
+	
+def topt(option)
+	"""Parses List of Options and returns the iptables Target"""
+	if option == "R":
+		return "REJECT"
+	if option == "A":
+		return "ACCEPT"
+	if option == "D":
+		return "DROP"
+	
+def fw_udp(port,target):
+	"""UDP packets from port (DROP/ACCEPT/REJECT) + LOG"""
+	if target != "A" || target != "D" || target != "R" || target != "A+L" || target != "D+L" || target != "R+L":
+                print "[ERROR]:fw_tcp():%s:unknown target using REJECT" % (target)
+		target = "R" # set REJECT flag
+	subprocess.call(shlex.split("sudo iptables -A INPUT -p udp -m udp --dport "+port+" -m state --state NEW -j "+topt(target)))
+	#-p udp -m udp  --dport 9987  -m state --state NEW  -j ACCEPT‏
+def fw_tcp(port,target):
+	"""TCP packets from port (DROP/ACCEPT/REJECT) + LOG"""
+	if target != "A" || target != "D" || target != "R" || target != "A+L" || target != "D+L" || target != "R+L":
+		print "[ERROR]:fw_tcp():%s:unknown target using REJECT" % (target)
+		target = "R" #set REJECT flag
+	subprocess.call(shlex.split("sudo iptables -A INPUT -p tcp -m tcp --dport "+port+" -m state --state NEW -j "+topt(target)))
+	## -A INPUT -p tcp -m tcp  --dport 8085  -m state --state NEW  -j ACCEPT ##
+
+##  Configuration file writter ##
 # file gets written line by line
 # allows for modification of each line in a configuration file
 #
@@ -218,6 +262,7 @@ def ts3():
             # Opens up the ports in iptabels needed for Teamspeak 3
             Firewall = raw_input('Open ports in your firewall for Teamspeak 3?: [y]' )#make TS3 rule and TARGET chain for cleaner table
             if Firewall == 'y' or Firewall == '':
+		#firewall function call
                 print "Opening ports"
                 subprocess.call(shlex.split('sudo iptables -A INPUT -p udp --dport 9987 -j ACCEPT'))
                 subprocess.call(shlex.split('sudo iptables -A INPUT -p udp --sport 9987 -j ACCEPT'))#check source ports do we need them? or is it arbitrary
