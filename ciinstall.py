@@ -1,5 +1,4 @@
-#!/usr/bin/python
-
+#!/usr/bin/python   
 ######################################################################################
 #
 # Copyright (C) 2013 Collective Industries code provided by Levi Modl & Andrew Malone
@@ -7,7 +6,7 @@
 #
 ######################################################################################
 
-				## TODO ##
+## TODO ##
 # add ulogd install + config
 # add iptables firewall script (set default as SSH on 22 only from localnet)
 # add mysql database + user for firewall
@@ -28,6 +27,18 @@ import crypt
 import urllib
 import re	
 
+npy = subprocess.call(shlex.split('locate npyscreen-3.2.egg-info'))
+
+# Installing npyscreen before importing npyscreen for menu UI 
+if npy == '':
+    os.chdir('/opt/')
+    subprocess.call(shlex.split('sudo wget https://pypi.python.org/packages/source/n/npyscreen/npyscreen-3.37.tar.gz'))
+    subprocess.call(shlex.split('tar xvf npyscreen-3.37.tar.gz'))
+    os.chdir('npyscreen-3.2')
+    subprocess.call(shlex.split('sudo ./setup.py'))
+    subprocess.call(shlex.split('sudo rm npyscreen-3.37.tar.gz'))
+import npyscreen
+    
 # Global Variables
 arch = ''    # Variable for the machines architecture
 User = ''    # Variable for getting the user who is running this script
@@ -69,7 +80,7 @@ if "check_output" not in dir( subprocess ): # duck punch it in!
 # PROVIDED BY: Andrew Malone
 # COPYRIGHT: Collective Industries (C) 2014
 
-	## firewall globals ##
+## firewall globals ##
 target_Dlog = "log_drop" ## Silently Drop + log
 target_Alog = "log_accept"
 target_Rlog = "log_reject" ## returns ICMP Admin Prohibited + Log
@@ -153,7 +164,7 @@ fw_services = {
 		"LDAPS":	"TCP:636:A"	# LDAP Secured
 		}
 
-### TODO add in service deictionary parser menu API
+### TODO add in service dictionary parser menu API
 
 ## firewall writer ##
 def fw_write():
@@ -214,7 +225,7 @@ def logo():
 #
 # Install Menu
 #
-##########################################
+##########################################    
 class InstallApp(npyscreen.NPSApp): # Simple UI Menu class by npyscreen
     def main(self):
         Form = npyscreen.ActionForm(name = "Collective Industries Program Installer",) # Creates the menu		
@@ -224,7 +235,7 @@ class InstallApp(npyscreen.NPSApp): # Simple UI Menu class by npyscreen
         # Programs to add
         #
         ###################################################
-	# iptables firewall rule builder
+        # iptables firewall rule builder
         # Mangos-Enhanced
         # LHC
         # Icinga + configuration
@@ -616,12 +627,8 @@ def addadmin():
             subprocess.call(shlex.split('sudo usermod -L '+ AdminUN))
             subprocess.call(shlex.split('sudo chage -d 0 '+ AdminUN))
             subprocess.call(shlex.split('sudo usermod -U '+ AdminUN))
-<<<<<<< HEAD
             mangosinstall()
 
-=======
-	    #migrate color scripts from REPO/obj to AdminHome/
->>>>>>> 34df331edbc834a3090d17a72f74341c4d647e37
         else:
             mangosinstall()
 
@@ -657,7 +664,6 @@ Clint = subprocess.call(shlex.split('dpkg-query -W -f="${Status} \n" clint')) # 
 SPC = subprocess.call(shlex.split('dpkg-query -W -f="${Status} \n" software-properties-common')) # Checks to see if software-properties-common is installed
 AF = subprocess.call(shlex.split('dpkg-query -W -f="${Status} \n" apt-file')) # Checks to see if apt-file is installed
 P3 = subprocess.call(shlex.split('dpkg-query -W -f="${Status} \n" python3.3')) # Check to see if python 3.3 is installed
-npy = subprocess.call(shlex.split('locate npyscreen-3.2.egg-info'))
 
 debug('platform.arch',str(platform.architecture()[0]),1)
 
@@ -687,15 +693,6 @@ if SPC == 1:
 # apt-file Installation and Update	
 if AF == 1:
     subprocess.call(shlex.split('sudo apt-get install -y apt-file && apt-file update'))
-
-# Installing npyscreen before importing npyscreen for menu UI 
-if npy == '':
-    os.chdir('/opt/')
-    subprocess.call(shlex.split('sudo wget https://pypi.python.org/packages/source/n/npyscreen/npyscreen-3.37.tar.gz'))
-    subprocess.call(shlex.split('tar xvf npyscreen-3.37.tar.gz'))
-    os.chdir('npyscreen-3.2')
-    subprocess.call(shlex.split('sudo ./setup.py'))
-    subprocess.call(shlex.split('sudo rm npyscreen-3.37.tar.gz'))
 	
 User = getpass.getuser() # Gets the current username 
 
