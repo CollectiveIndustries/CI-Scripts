@@ -28,9 +28,9 @@ import urllib
 import re	
 
 npy = subprocess.call(shlex.split('locate npyscreen-3.2.egg-info'))
-
+debug('npy', npy, 1)
 # Installing npyscreen before importing npyscreen for menu UI 
-if npy == '':
+if npy == '' or npy == ' 1':
     os.chdir('/opt/')
     subprocess.call(shlex.split('sudo wget https://pypi.python.org/packages/source/n/npyscreen/npyscreen-3.37.tar.gz'))
     subprocess.call(shlex.split('tar xvf npyscreen-3.37.tar.gz'))
