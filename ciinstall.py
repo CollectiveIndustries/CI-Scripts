@@ -68,16 +68,13 @@ if "check_output" not in dir( subprocess ): # duck punch it in!
 #
 # PROVIDED BY: Andrew Malone
 # COPYRIGHT: Collective Industries (C) 2014
-#
-# $IPTABLES -A RULE_4  -j LOG  --log-level info --log-prefix "SOME TEXT"
-# $IPTABLES -A RULE_4  -j DROP
-# ULOG INSTALLED
-# $IPTABLES -A RULE_4  -j ULOG  --ulog-nlgroup 1 --ulog-prefix "SOME TEXT" --ulog-qthreshold 1
 
 	## firewall globals ##
 target_Dlog = "log_drop" ## Silently Drop + log
 target_Alog = "log_accept"
 target_Rlog = "log_reject" ## returns ICMP Admin Prohibited + Log
+
+
 def pre_fw_init(fw_log_typ):
 	"""call once to set up standard firewall rule-set and prepare for server install"""
 	if fw_log_typ == 1:
@@ -156,14 +153,14 @@ fw_services = {
 		"LDAPS":	"TCP:636:A"	# LDAP Secured
 		}
 
-### TODO add in service deictionary parser + table loop to set up firewall
+### TODO add in service deictionary parser menu API
 
 ## firewall writer ##
 def fw_write():
 	"""write installed programs to firewall"""
 	for service options in fw_services.iteritems():
 		opt_lst = options.split(":")# split on the Colon
-		print "[FW] ADDING servicename %s %s port %s TARGET: %s" % (service, opt_lst[0], opt_lst[1], opt_lst[2])
+		print "[FW] ADDING servicename %s %s port %s TARGET: %s" % (service, opt_lst[0], opt_lst[1], topt(opt_lst[2]))
 		if opt_lst[0] == "TCP":
 			fw_tcp(opt_lst[1],opt_lst[2])
 		if opt_lst[0] == "UDP":
