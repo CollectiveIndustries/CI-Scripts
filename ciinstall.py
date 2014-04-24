@@ -96,7 +96,7 @@ def pre_fw_init(fw_log_typ):
                 subprocess.call(shlex.split("sudo iptables -A "+target_Alog+" -j LOG  --log-level info --log-prefix \"ACCEPT\""))
                 subprocess.call(shlex.split("sudo iptables -A "+target_Alog+" -j ACCEPT")) 
 		
-def topt(option)
+def topt(option):
 	"""Parses List of Options and returns the iptables Target"""
 	if option == "R":
 		return "REJECT"
@@ -108,12 +108,12 @@ def topt(option)
 		return target_Alog
 	if option == "D+L":
 		return target_Dlog
-	if option == "R+L"
+	if option == "R+L":
 		return target_Rlog
 ## UDP packet handler ##
 def fw_udp(port,target_opt):
 	"""UDP packets from port (DROP/ACCEPT/REJECT) + LOG"""
-	if target != "A" || target != "D" || target != "R" || target != "A+L" || target != "D+L" || target != "R+L":
+	if target != "A" or target != "D" or target != "R" or target != "A+L" or target != "D+L" or target != "R+L":
                 print "[ERROR]:fw_tcp():%s:unknown target using REJECT" % (target)
 		target = "R" # set REJECT flag
 	subprocess.call(shlex.split("sudo iptables -A INPUT -p udp -m udp --dport "+port+" -m state --state NEW -j "+topt(target_opt)))
@@ -121,7 +121,7 @@ def fw_udp(port,target_opt):
 ## TCP Packet Handler ##
 def fw_tcp(port,target_opt):
 	"""TCP packets from port (DROP/ACCEPT/REJECT) + LOG"""
-	if target != "A" || target != "D" || target != "R" || target != "A+L" || target != "D+L" || target != "R+L":
+	if target != "A" or target != "D" or target != "R" or target != "A+L" or target != "D+L" or target != "R+L":
 		print "[ERROR]:fw_tcp():%s:unknown target using REJECT" % (target)
 		target = "R" #set REJECT flag
 	subprocess.call(shlex.split("sudo iptables -A INPUT -p tcp -m tcp --dport "+port+" -m state --state NEW -j "+topt(target_opt)))
@@ -158,13 +158,14 @@ fw_services = {
 ## firewall writer ##
 def fw_write():
 	"""write installed programs to firewall"""
-	for service options in fw_services.iteritems():
+	for service, options in fw_services.iteritems():
 		opt_lst = options.split(":")# split on the Colon
 		print "[FW] ADDING servicename %s %s port %s TARGET: %s" % (service, opt_lst[0], opt_lst[1], topt(opt_lst[2]))
 		if opt_lst[0] == "TCP":
 			fw_tcp(opt_lst[1],opt_lst[2])
 		if opt_lst[0] == "UDP":
 			fw_udp(opt_lst[1],opt_lst[2])
+
 ##  Configuration file writter ##
 # file gets written line by line
 # allows for modification of each line in a configuration file
