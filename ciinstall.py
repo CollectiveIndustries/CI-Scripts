@@ -158,6 +158,16 @@ fw_services = {
 
 ### TODO add in service deictionary parser + table loop to set up firewall
 
+## firewall writer ##
+def fw_write():
+	"""write installed programs to firewall"""
+	for service options in fw_services.iteritems():
+		opt_lst = options.split(":")# split on the Colon
+		print "[FW] ADDING servicename %s %s port %s TARGET: %s" % (service, opt_lst[0], opt_lst[1], opt_lst[2])
+		if opt_lst[0] == "TCP":
+			fw_tcp(opt_lst[1],opt_lst[2])
+		if opt_lst[0] == "UDP":
+			fw_udp(opt_lst[1],opt_lst[2])
 ##  Configuration file writter ##
 # file gets written line by line
 # allows for modification of each line in a configuration file
