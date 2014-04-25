@@ -74,11 +74,17 @@ if "check_output" not in dir( subprocess ): # duck punch it in!
 ##########################################
 
 ### Firewall API ###
-# set of firewall functions
-# calls iptables with ports to add to the firewall and sets log options if needed
-#
-# PROVIDED BY: Andrew Malone
-# COPYRIGHT: Collective Industries (C) 2014
+# set of firewall  #
+# functions calls  #
+# iptables with    #
+# ports to add to  #
+# the firewall and #
+# sets log options #
+# if needed        #
+#############################################
+# PROVIDED BY: Andrew Malone                #
+# COPYRIGHT: Collective Industries (C) 2014 #
+#############################################
 
 ## firewall globals ##
 target_Dlog = "log_drop" ## Silently Drop + log
