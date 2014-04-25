@@ -27,16 +27,16 @@ import crypt
 import urllib
 import re	
 
-npy = subprocess.call(shlex.split('locate npyscreen-3.2.egg-info'))
-debug('npy', npy, 1)
-# Installing npyscreen before importing npyscreen for menu UI 
-if npy == '' or npy == ' 1':
+# Installing npyscreen before importing npyscreen for menu UI
+npy = subprocess.call(shlex.split('locate npyscreen-3.6.egg-info'))
+if npy == 1:
     os.chdir('/opt/')
-    subprocess.call(shlex.split('sudo wget https://pypi.python.org/packages/source/n/npyscreen/npyscreen-3.37.tar.gz'))
-    subprocess.call(shlex.split('tar xvf npyscreen-3.37.tar.gz'))
-    os.chdir('npyscreen-3.2')
-    subprocess.call(shlex.split('sudo ./setup.py'))
-    subprocess.call(shlex.split('sudo rm npyscreen-3.37.tar.gz'))
+    subprocess.call(shlex.split('sudo wget https://pypi.python.org/packages/source/n/npyscreen/npyscreen-3.6.tar.gz --no-check-certificate'))
+    subprocess.call(shlex.split('sudo tar xvf npyscreen-3.6.tar.gz'))
+    os.chdir('npyscreen-3.6')
+    subprocess.call(shlex.split('sudo ./setup.py install'))
+    subprocess.call(shlex.split('sudo rm /opt/npyscreen-3.6.tar.gz'))
+
 import npyscreen
     
 # Global Variables
@@ -705,8 +705,8 @@ update = raw_input('Before we begin would you like to update the server?: [y]' )
     
 if update == 'y' or  update == '':
     import npyscreen
-    subprocess.call(shlex.split('sudo apt-get update -y'))
-    subprocess.call(shlex.split('sudo apt-get upgrade -y'))
+    subprocess.call(shlex.split('sudo apt-get update --force -y'))
+    subprocess.call(shlex.split('sudo apt-get upgrade --force -y'))
     App = InstallApp()
     App.run()
     if choice.get_selected_objects() is not None:
