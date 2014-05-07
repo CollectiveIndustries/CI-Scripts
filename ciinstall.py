@@ -90,6 +90,7 @@ if AF == 1:
 #
 #  Global Variables
 #
+<<<<<<< HEAD
 ########################
 arc = '' # Variable for the machines architecture
 User = '' # Variable for getting the user who is running this script
@@ -104,30 +105,95 @@ target_Rlog = 'log_reject' # Returns ACMP Admin Prohibited + Log
 ####################
 # Dictionary Array #
 ####################
+=======
+##########################################
+
+### Firewall API ###
+# set of firewall  #
+# functions calls  #
+# iptables with    #
+# ports to add to  #
+# the firewall and #
+# sets log options #
+# if needed        #
+#############################################
+# PROVIDED BY: Andrew Malone                #
+# COPYRIGHT: Collective Industries (C) 2014 #
+#############################################
+
+def pre_fw_init(fw_log_typ):
+	# Call once to set up standard firewall rule-set and prepare for server install
+	if fw_log_typ == 1:
+                subprocess.call(shlex.split("sudo ./obj/firewall/basic-ulogd.fw")) ## 1 == User Logging Daemon 0 == SYSLOG logging space
+        if fw_log_typ == 0:
+                subprocess.call(shlex.split("sudo ./obj/firewall/basic-syslog.fw"))# install basic firewall all other rules will be built ON TOP of this script
+
+	subprocess.call(shlex.split("sudo iptables -N "+target_Dlog)) ## add drop + log chain to firewall
+	subprocess.call(shlex.split("sudo iptables -N "+target_Alog)) ## add Accept + log chain to firewall
+	## Add basic log options to bolth chains this is also depends on the logging daemon ##
+	if fw_log_typ == 0:
+		subprocess.call(shlex.split("sudo iptables -A "+target_Dlog+" -j ULOG --ulog-nlgroup 1 --ulog-prefix \"DENY\" --ulog-qthreshold 1"))
+		subprocess.call(shlex.split("sudo iptables -A "+target_Dlog+" -j DROP"))
+	        subprocess.call(shlex.split("sudo iptables -A "+target_Alog+" -j ULOG --ulog-nlgroup 1 --ulog-prefix \"ACCEPT\" --ulog-qthreshold 1"))
+        	subprocess.call(shlex.split("sudo iptables -A "+target_Alog+" -j ACCEPT"))
+	if fw_log_typ == 1:
+            subprocess.call(shlex.split("sudo iptables -A "+target_Dlog+" -j LOG  --log-level info --log-prefix \"DENY\""))
+            subprocess.call(shlex.split("sudo iptables -A "+target_Dlog+" -j DROP"))
+            subprocess.call(shlex.split("sudo iptables -A "+target_Alog+" -j LOG  --log-level info --log-prefix \"ACCEPT\""))
+            subprocess.call(shlex.split("sudo iptables -A "+target_Alog+" -j ACCEPT")) 
+		
+def topt(option):
+	# Parses List of Options and returns the iptables Target
+	if option == "A":
+		return "ACCEPT"
+	if option == "D":
+		return "DROP"
+	if option == "A+L":
+		return target_Alog
+	if option == "D+L":
+		return target_Dlog
+	if option == "R+L":
+		return target_Rlog
+	else: #tell user about wrong option and failsafe to REJECT no log
+		if option != "R":
+	                print "[ERROR]:topt():%s:unknown target using REJECT" % (option)
+        	return "REJECT"
+# UDP packet handler
+def fw_udp(port,target_opt):
+	# UDP packets from port (DROP/ACCEPT/REJECT) + LOG
+	subprocess.call(shlex.split("sudo iptables -A INPUT -p udp -m udp --dport "+port+" -m state --state NEW -j "+topt(target_opt)))
+
+# TCP Packet Handler
+def fw_tcp(port,target_opt):
+	# TCP packets from port (DROP/ACCEPT/REJECT) + LOG
+	subprocess.call(shlex.split("sudo iptables -A INPUT -p tcp -m tcp --dport "+port+" -m state --state NEW -j "+topt(target_opt)))
+
+# Dictionary Array of services: "TCP|UDP:port_numbers:OPTIONS" allows for editing each building rules
+>>>>>>> 0f8fb9cb72a3afcb90b9b6b9e200fd7982c53591
 fw_services = {
 		"mangos-world": "TCP:8085:A",	# defualt for mangos-world accept on tcp 8085
 		"mangos-auth": 	"TCP:3724:A",	# mangos "REALMD" authentication server
 		"IceCast2": 	"TCP:8000:A",	# Icecast2 TCP 8000
-		"TS3-FS":	"TCP:30033:A",	    # TeamSpeak3 FileServer
+		"TS3-FS":	"TCP:30033:A",  # TeamSpeak3 FileServer
 		"TS3-Voice":	"UDP:9987:A",	# TeamSpeak3 Voice Server
 		"TS3-Query":	"TCP:10011:A",	# TeamSpeak3 QueryServer
-		"HTTP":		"TCP:80:A",	        # HTTP Server (Apache2)
-		"HTTPS":	"TCP:443:A",	    # HTTPS Server (apache2)
-		"webmin":	"TCP:10000:A",	    # WebMin Server
-		"mysql":	"TCP:3306:A",	    # MYSQL Server
-		"pop3":		"TCP:110:A",	    # POP3 Email port
-		"pop3s":	"TCP:995:A",	    # POP3 Secured port
-		"smtp":		"TCP:25:A",	        # SMTP Email Port
-		"smtps":	"TCP:465:A",	    # SMTP Secure Email
-		"samba":	"TCP:445:A",	    # SAMBA windows file share  
+		"HTTP":		"TCP:80:A",     # HTTP Server (Apache2)
+		"HTTPS":	"TCP:443:A",    # HTTPS Server (apache2)
+		"webmin":	"TCP:10000:A+L",# WebMin Server
+		"mysql":	"TCP:3306:A",	# MYSQL Server
+		"pop3":		"TCP:110:A",	# POP3 Email port
+		"pop3s":	"TCP:995:A",	# POP3 Secured port
+		"smtp":		"TCP:25:A",	# SMTP Email Port
+		"smtps":	"TCP:465:A",	# SMTP Secure Email
+		"samba":	"TCP:445:A",	# SAMBA windows file share  
 		"netbios-ssn":	"UDP:139:A",	# SAMBA windows share netbios-ssn
 		"netbios-dgm":	"UDP:138:A",	# port 138 UDP netbios-dgm for SAMBA
 		"netbios-ns":	"UDP:137:A",	# netbios-ns 
 		"minecraft":	"TCP:65535:A",	# Minecraft TCP Port
-		"LDAP":		"TCP:389:A",	    # LDAP server port
-		"LDAP-GC":	"TCP:3268:A",	    # LDAP Global Catalog
+		"LDAP":		"TCP:389:A",	# LDAP server port
+		"LDAP-GC":	"TCP:3268:A",	# LDAP Global Catalog
 		"LDAP-GC-SSL":	"TCP:3269:A",	# LDAP GC SSL
-		"LDAPS":	"TCP:636:A"	        # LDAP Secured
+		"LDAPS":	"TCP:636:A"	# LDAP Secured
 		}
 ########################
 # Program Install List #
