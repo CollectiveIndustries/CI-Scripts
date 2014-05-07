@@ -90,7 +90,6 @@ if AF == 1:
 #
 #  Global Variables
 #
-<<<<<<< HEAD
 ########################
 arc = '' # Variable for the machines architecture
 User = '' # Variable for getting the user who is running this script
@@ -105,7 +104,6 @@ target_Rlog = 'log_reject' # Returns ACMP Admin Prohibited + Log
 ####################
 # Dictionary Array #
 ####################
-=======
 ##########################################
 
 ### Firewall API ###
