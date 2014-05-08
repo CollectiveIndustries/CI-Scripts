@@ -167,7 +167,6 @@ def fw_tcp(port,target_opt):
 	subprocess.call(shlex.split("sudo iptables -A INPUT -p tcp -m tcp --dport "+port+" -m state --state NEW -j "+topt(target_opt)))
 
 # Dictionary Array of services: "TCP|UDP:port_numbers:OPTIONS" allows for editing each building rules
->>>>>>> 0f8fb9cb72a3afcb90b9b6b9e200fd7982c53591
 fw_services = {
 		"mangos-world": "TCP:8085:A",	# defualt for mangos-world accept on tcp 8085
 		"mangos-auth": 	"TCP:3724:A",	# mangos "REALMD" authentication server
